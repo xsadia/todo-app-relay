@@ -1,0 +1,240 @@
+"""Exposes a URL that specifies the behaviour of this scalar."""
+directive @specifiedBy(
+  """The URL that specifies the behaviour of this scalar."""
+  url: String!
+) on SCALAR
+
+input AuthUserInput {
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+type AuthUserPayload {
+  token: String
+  error: String
+  clientMutationId: String
+}
+
+input CompleteTodoInput {
+  id: String!
+  clientMutationId: String
+}
+
+type CompleteTodoPayload {
+  success: Boolean
+  error: String
+  clientMutationId: String
+}
+
+input CreateTodoInput {
+  content: String!
+  clientMutationId: String
+}
+
+type CreateTodoPayload {
+  created: Boolean
+  error: String
+  clientMutationId: String
+}
+
+input CreateUserInput {
+  username: String!
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+type CreateUserPayload {
+  token: String
+  error: String
+  clientMutationId: String
+}
+
+input DeleteTodoInput {
+  id: String!
+  clientMutationId: String
+}
+
+type DeleteTodoPayload {
+  success: Boolean
+  error: String
+  clientMutationId: String
+}
+
+input DeleteUserInput {
+  clientMutationId: String
+}
+
+type DeleteUserPayload {
+  success: Boolean
+  error: String
+  clientMutationId: String
+}
+
+input EditTodoInput {
+  id: String!
+  content: String!
+  clientMutationId: String
+}
+
+type EditTodoPayload {
+  todo: TodoEdge
+  error: String
+  clientMutationId: String
+}
+
+"""Root of all mutation"""
+type Mutation {
+  """Create User Mutation"""
+  CreateUserMutation(input: CreateUserInput!): CreateUserPayload
+
+  """Authenticate User Mutation"""
+  AuthUserMutation(input: AuthUserInput!): AuthUserPayload
+
+  """Delete User Mutation"""
+  DeleteUserMutation(input: DeleteUserInput!): DeleteUserPayload
+
+  """Complete Todo Mutation"""
+  CompleteTodoMutation(input: CompleteTodoInput!): CompleteTodoPayload
+
+  """Create Todo Mutation"""
+  CreateTodoMutation(input: CreateTodoInput!): CreateTodoPayload
+
+  """Edit Todo Mutation"""
+  EditTodoMutation(input: EditTodoInput!): EditTodoPayload
+  DeleteTodoMutation(input: DeleteTodoInput!): DeleteTodoPayload
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+"""The root of all queries"""
+type Query {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Fetches objects given their IDs"""
+  nodes(
+    """The IDs of objects"""
+    ids: [ID!]!
+  ): [Node]!
+  users(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): UserConnection!
+  user: User
+  todos(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): TodoConnection!
+  todo(id: String!): Todo
+}
+
+"""Todo type"""
+type Todo implements Node {
+  """The ID of an object"""
+  id: ID!
+  content: String!
+  owner: User
+  isCompleted: Boolean!
+  createdAt: String!
+}
+
+"""A connection to a list of items."""
+type TodoConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [TodoEdge]
+}
+
+"""An edge in a connection."""
+type TodoEdge {
+  """The item at the end of the edge"""
+  node: Todo
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""User type"""
+type User implements Node {
+  """The ID of an object"""
+  id: ID!
+  username: String!
+  email: String!
+  password: String!
+  todos(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): TodoConnection!
+}
+
+"""A connection to a list of items."""
+type UserConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [UserEdge]
+}
+
+"""An edge in a connection."""
+type UserEdge {
+  """The item at the end of the edge"""
+  node: User
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
