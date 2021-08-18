@@ -1,10 +1,10 @@
-{
+/* {
     "plugins": [
         [
             "relay",
             {
-                "artifactDirectory": "./src/relay/__generated__"
+                "artifactDirectory": "./__generated__"
             }
         ]
     ]
-}
+} */

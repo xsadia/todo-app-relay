@@ -1,16 +1,41 @@
-import { useLazyLoadQuery } from "react-relay";
-import UserQuery from '../../relay/UserQuery';
-import { UserQuery as UserQueryType } from '../../relay/__generated__/UserQuery.graphql';
-import { TodoList } from "../../components/TodoList";
+import { loadQuery, usePreloadedQuery } from 'react-relay/hooks';
+import { HomePageUserQuery } from './__generated__/HomePageUserQuery.graphql';
+import graphql from 'babel-plugin-relay/macro';
+import RelayEnviroment from '../../relay/RelayEnviroment';
+
+const UserInfoQuery = graphql`
+    query HomePageUserQuery {
+        user {
+            username
+            email
+            todos {
+                edges {
+                    node {
+                        id
+                        content
+                    }
+                }
+            }
+        }
+    }
+`;
+
+const preloadedQuery = loadQuery<HomePageUserQuery>(RelayEnviroment, UserInfoQuery, {});
+
+
 
 export const HomePage = () => {
 
-    const data = useLazyLoadQuery<UserQueryType>(UserQuery, {});
+    const data = usePreloadedQuery<HomePageUserQuery>(UserInfoQuery, preloadedQuery);
 
     return (
         <>
             <h1>{data.user.username}</h1>
-            <TodoList data={data.user.todos} />
+            <h1>{data.user.email}</h1>
+            {data.user.todos.edges.map(node => (
+                <h1 key={node.node.id}>{node.node.content}</h1>
+            ))}
+            {/* <TodoList data={data.user.todos} /> */}
         </>
     );
 };

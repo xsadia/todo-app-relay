@@ -24,7 +24,7 @@
   "scripts": {
     "start": "yarn run relay && react-scripts start",
     "build": "yarn run relay && react-scripts build",
-    "relay": "relay-compiler --src ./src --schema data/schema.graphql --language typescript --artifactDirectory ./src/relay/__generated__",
+    "relay": "relay-compiler --src ./src --schema ./src/data/schema.graphql --language typescript",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
