@@ -4,6 +4,9 @@ export default graphql`
 query UserQuery {
   user {
     username
+    todos {
+      ... TodoContentFragment
+    }
   }
 }
 `;

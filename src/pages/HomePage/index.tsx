@@ -1,15 +1,16 @@
 import { useLazyLoadQuery } from "react-relay";
 import UserQuery from '../../relay/UserQuery';
-import { UserQuery as UserQueryType } from '../../__generated__/UserQuery.graphql';
-
+import { UserQuery as UserQueryType } from '../../relay/__generated__/UserQuery.graphql';
+import { TodoList } from "../../components/TodoList";
 
 export const HomePage = () => {
 
-    const { user } = useLazyLoadQuery<UserQueryType>(UserQuery, {});
-
-    console.log(user);
+    const data = useLazyLoadQuery<UserQueryType>(UserQuery, {});
 
     return (
-        <h1>{user.username}</h1>
+        <>
+            <h1>{data.user.username}</h1>
+            <TodoList data={data.user.todos} />
+        </>
     );
 };
