@@ -11,6 +11,7 @@ input AuthUserInput {
 }
 
 type AuthUserPayload {
+  me: User
   token: String
   error: String
   clientMutationId: String
@@ -33,6 +34,7 @@ input CreateTodoInput {
 }
 
 type CreateTodoPayload {
+  todoEdge: TodoEdge
   created: Boolean
   error: String
   clientMutationId: String

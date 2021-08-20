@@ -1,41 +1,36 @@
-import { loadQuery, usePreloadedQuery } from 'react-relay/hooks';
-import { HomePageUserQuery } from './__generated__/HomePageUserQuery.graphql';
-import graphql from 'babel-plugin-relay/macro';
-import RelayEnviroment from '../../relay/RelayEnviroment';
+import { TodoList } from '../../components/TodoList';
+import { Header } from '../../components/Header';
+import { HomePageContainer } from './styles';
+import { Suspense } from 'react';
+import Modal from 'react-modal';
+import { useState } from 'react';
+import { CreateTodoModal } from '../../components/CreateTodoModal';
 
-const UserInfoQuery = graphql`
-    query HomePageUserQuery {
-        user {
-            username
-            email
-            todos {
-                edges {
-                    node {
-                        id
-                        content
-                    }
-                }
-            }
-        }
-    }
-`;
-
-const preloadedQuery = loadQuery<HomePageUserQuery>(RelayEnviroment, UserInfoQuery, {});
-
-
+Modal.setAppElement('#root');
 
 export const HomePage = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const data = usePreloadedQuery<HomePageUserQuery>(UserInfoQuery, preloadedQuery);
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
     return (
         <>
-            <h1>{data.user.username}</h1>
-            <h1>{data.user.email}</h1>
-            {data.user.todos.edges.map(node => (
-                <h1 key={node.node.id}>{node.node.content}</h1>
-            ))}
-            {/* <TodoList data={data.user.todos} /> */}
+            <Header handleOpenModal={handleOpenModal} />
+            <HomePageContainer>
+                <CreateTodoModal
+                    handleCloseModal={handleCloseModal}
+                    isModalOpen={isModalOpen}
+                />
+                <Suspense fallback={'Loading...'}>
+                    <TodoList />
+                </ Suspense>
+            </HomePageContainer>
         </>
     );
 };
