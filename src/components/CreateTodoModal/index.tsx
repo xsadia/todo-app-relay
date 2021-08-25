@@ -30,7 +30,7 @@ export const CreateTodoModal = ({ handleCloseModal, isModalOpen }: CreateTodoMod
         `
     );
 
-    const [_, loadQuery] = useQueryLoader<TodolistQueryType>(
+    const [, loadQuery] = useQueryLoader<TodolistQueryType>(
         TodoListQuery,
         TodoQuery
     );

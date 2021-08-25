@@ -1,17 +1,70 @@
-import { useFormik, Field } from "formik";
+import { useFormik } from "formik";
 import { useHistory } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+/* import { useAuth } from "../../auth/useAuth"; */
 import { LoginPageContainer, LoginPageForm, LoginpageLabel } from "./styles";
 import * as Yup from 'yup';
 import { Input } from "../../components/Input";
 import { BiUser, BiLockAlt } from 'react-icons/bi';
 import { FormButton } from "../../components/FormButton";
 import { ErrorMessage } from "../../components/ErrorMessage";
+import { useMutation } from "react-relay";
+import graphql from 'babel-plugin-relay/macro';
+import { LoginPage_authMutation, LoginPage_authMutationResponse } from './__generated__/LoginPage_authMutation.graphql';
+import { FormEvent } from "react";
+import { useEffect } from "react";
+
+type Values = {
+    email: string;
+    password: string;
+};
+
+
 
 export const LoginPage = () => {
+    const [commit] = useMutation<LoginPage_authMutation>(
+        graphql`
+            mutation LoginPage_authMutation($input: AuthUserInput!) {
+                AuthUserMutation(input: $input) {
+                    me {
+                        id
+                        username
+                        email
+                    }
+                    token
+                    error
+                }
+            }
+        `,
+
+    );
+
     const history = useHistory();
 
-    const { signIn } = useAuth();
+    useEffect(() => {
+        const token = localStorage.getItem('@relayTodo:token');
+        if (token) {
+            history.push('/home');
+        }
+    }, [history]);
+
+    const onSubmit = (values: Values) => {
+        const config = {
+            variables: {
+                input: {
+                    email: values.email,
+                    password: values.password
+                }
+            },
+            onCompleted: ({ AuthUserMutation }: LoginPage_authMutationResponse) => {
+                if (AuthUserMutation?.token) {
+                    localStorage.setItem('@relayTodo:token', AuthUserMutation.token);
+                    localStorage.setItem('@relayTodo:user', JSON.stringify(AuthUserMutation.me));
+                    history.push('/home');
+                }
+            },
+        };
+        commit(config);
+    };
 
     const formik = useFormik({
         initialValues: {
@@ -22,16 +75,18 @@ export const LoginPage = () => {
             email: Yup.string().required('E-mail required').email('Provide a valid e-mail'),
             password: Yup.string().required('Password required').min(6, 'Minimum of 6 characters')
         }),
-        onSubmit: ({ email, password }) => {
-            signIn({ email, password });
-            history.push('/');
-        }
+        onSubmit
     });
+
+    const handleSubmitGambiarra = (e: FormEvent) => {
+        e.preventDefault();
+        formik.handleSubmit();
+    };
 
     return (
         <LoginPageContainer>
 
-            <LoginPageForm onSubmit={formik.handleSubmit}>
+            <LoginPageForm onSubmit={handleSubmitGambiarra} >
                 <LoginpageLabel>E-mail</LoginpageLabel>
                 <Input
                     isErrored={!!formik.errors.email}
@@ -65,7 +120,7 @@ export const LoginPage = () => {
                 ) :
                     null
                 }
-                <FormButton>Sign in</FormButton>
+                <FormButton type="submit" >Sign in</FormButton>
             </LoginPageForm>
         </LoginPageContainer>
     );

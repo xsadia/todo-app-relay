@@ -9,10 +9,10 @@ export type AuthUserInput = {
     password: string;
     clientMutationId?: string | null;
 };
-export type useAuth_authMutationVariables = {
+export type LoginPage_authMutationVariables = {
     input: AuthUserInput;
 };
-export type useAuth_authMutationResponse = {
+export type LoginPage_authMutationResponse = {
     readonly AuthUserMutation: {
         readonly me: {
             readonly id: string;
@@ -23,15 +23,15 @@ export type useAuth_authMutationResponse = {
         readonly error: string | null;
     } | null;
 };
-export type useAuth_authMutation = {
-    readonly response: useAuth_authMutationResponse;
-    readonly variables: useAuth_authMutationVariables;
+export type LoginPage_authMutation = {
+    readonly response: LoginPage_authMutationResponse;
+    readonly variables: LoginPage_authMutationVariables;
 };
 
 
 
 /*
-mutation useAuth_authMutation(
+mutation LoginPage_authMutation(
   $input: AuthUserInput!
 ) {
   AuthUserMutation(input: $input) {
@@ -124,7 +124,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "useAuth_authMutation",
+    "name": "LoginPage_authMutation",
     "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
@@ -133,18 +133,18 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "useAuth_authMutation",
+    "name": "LoginPage_authMutation",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "fd4e12c9011dc24f060adccfe5b8097a",
+    "cacheID": "b35e672874164ec6ac793d69226fd579",
     "id": null,
     "metadata": {},
-    "name": "useAuth_authMutation",
+    "name": "LoginPage_authMutation",
     "operationKind": "mutation",
-    "text": "mutation useAuth_authMutation(\n  $input: AuthUserInput!\n) {\n  AuthUserMutation(input: $input) {\n    me {\n      id\n      username\n      email\n    }\n    token\n    error\n  }\n}\n"
+    "text": "mutation LoginPage_authMutation(\n  $input: AuthUserInput!\n) {\n  AuthUserMutation(input: $input) {\n    me {\n      id\n      username\n      email\n    }\n    token\n    error\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '3845fea32c679f3991f933fbc7f787a3';
+(node as any).hash = '29f48fd3965fe97767d10ad9e3e72ef7';
 export default node;

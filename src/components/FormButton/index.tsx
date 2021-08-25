@@ -1,13 +1,13 @@
-import { ReactNode } from "react";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 import { Button } from "./styles";
 
-type InputProps = {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     children: ReactNode;
-};
+}
 
-export const FormButton = ({ children }: InputProps) => {
+export const FormButton = ({ children, ...rest }: ButtonProps) => {
     return (
-        <Button type="submit" >
+        <Button {...rest}  >
             {children}
         </Button>
     );

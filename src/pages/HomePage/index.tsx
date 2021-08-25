@@ -1,10 +1,10 @@
 import { TodoList } from '../../components/TodoList';
 import { Header } from '../../components/Header';
 import { HomePageContainer } from './styles';
-import { Suspense } from 'react';
 import Modal from 'react-modal';
 import { useState } from 'react';
 import { CreateTodoModal } from '../../components/CreateTodoModal';
+
 
 Modal.setAppElement('#root');
 
@@ -27,9 +27,7 @@ export const HomePage = () => {
                     handleCloseModal={handleCloseModal}
                     isModalOpen={isModalOpen}
                 />
-                <Suspense fallback={'Loading...'}>
-                    <TodoList />
-                </ Suspense>
+                <TodoList />
             </HomePageContainer>
         </>
     );
