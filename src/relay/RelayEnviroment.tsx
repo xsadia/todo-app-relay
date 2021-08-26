@@ -6,7 +6,7 @@ const getToken = () => {
 
 const fetchQuery = (operation: any, variables: any) => {
     const authorization = `Bearer ${getToken()}`;
-    return fetch('http://localhost:4000/graphql', {
+    return fetch('https://todo-koa-graphql.herokuapp.com/graphql', {
         method: 'POST',
         headers: {
             'content-type': 'application/json',
