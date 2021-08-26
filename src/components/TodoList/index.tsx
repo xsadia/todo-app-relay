@@ -1,12 +1,11 @@
 import graphql from 'babel-plugin-relay/macro';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { loadQuery, usePreloadedQuery, useQueryLoader } from 'react-relay';
 import RelayEnviroment from '../../relay/RelayEnviroment';
 import { Todo } from '../Todo';
 import { Container } from './styles';
 import { TodoListQuery as TodolistQueryType } from './__generated__/TodoListQuery.graphql';
 import TodoListQuery from './__generated__/TodoListQuery.graphql';
-import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
 export const TodoQuery = graphql`
@@ -24,38 +23,32 @@ export const TodoQuery = graphql`
     }
 `;
 
-
-
 const preloadedQuery = loadQuery<TodolistQueryType>(RelayEnviroment, TodoListQuery, {});
 
 export const TodoList = () => {
-    const [
-        ,
-        loadQuery,
-        disposeQuery
-    ] = useQueryLoader<TodolistQueryType>(
+
+    const [, loadTodoQuery] = useQueryLoader<TodolistQueryType>(
         TodoListQuery,
         preloadedQuery
     );
 
     const refresh = useCallback(() => {
-        loadQuery({}, { fetchPolicy: 'network-only' });
-    }, [loadQuery]);
+        loadTodoQuery({}, { fetchPolicy: 'network-only' });
+    }, [loadTodoQuery]);
 
     const history = useHistory();
+
     useEffect(() => {
         const token = localStorage.getItem('@relayTodo:token');
         if (!token) {
-            disposeQuery();
             history.push('/');
         }
 
         refresh();
-    }, [history, refresh, disposeQuery]);
+    }, [history, refresh]);
 
     const data = usePreloadedQuery<TodolistQueryType>(TodoListQuery, preloadedQuery, { UNSTABLE_renderPolicy: 'full' });
 
-    /*  const data = useLazyLoadQuery<TodolistQueryType>(TodoQuery, {}, { fetchPolicy: 'store-or-network' }); */
     return (
         <Container>
             {data?.user?.todos.edges.map(({ node }) => (

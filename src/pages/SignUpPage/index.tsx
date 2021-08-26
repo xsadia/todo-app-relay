@@ -1,32 +1,33 @@
-import { useFormik } from "formik";
-import { Link, useHistory } from "react-router-dom";
-import { LoginPageContainer, LoginPageForm, LoginpageLabel, LinkContainer } from "./styles";
-import * as Yup from 'yup';
 import { Input } from "../../components/Input";
-import { BiLockAlt } from 'react-icons/bi';
-import { FiMail } from 'react-icons/fi';
+import { SignUpPageContainer, SignUpPageForm, SignUpPageLabel, LinkContainer } from "./styles";
 import { AiOutlineUser } from 'react-icons/ai';
+import { FiLogIn } from 'react-icons/fi';
 import { FormButton } from "../../components/FormButton";
-import { ErrorMessage } from "../../components/ErrorMessage";
+import { useFormik } from "formik";
 import { useMutation } from "react-relay";
-import { LoginPage_authMutation, LoginPage_authMutationResponse } from './__generated__/LoginPage_authMutation.graphql';
-import { FormEvent } from "react";
-import { useEffect } from "react";
+import * as Yup from 'yup';
+import graphql from 'babel-plugin-relay/macro';
+import { ErrorMessage } from "../../components/ErrorMessage";
+import { Link, useHistory } from "react-router-dom";
+import { SignUpPage_CreateUserMutation, SignUpPage_CreateUserMutationResponse } from "./__generated__/SignUpPage_CreateUserMutation.graphql";
+import { FormEvent, useEffect } from "react";
+import { FiMail } from "react-icons/fi";
+import { BiLockAlt } from "react-icons/bi";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import graphql from 'babel-plugin-relay/macro';
 
 type Values = {
     email: string;
+    username: string;
     password: string;
 };
 
-export const LoginPage = () => {
+export const SignUpPage = () => {
 
-    const [commit] = useMutation<LoginPage_authMutation>(
+    const [commit] = useMutation<SignUpPage_CreateUserMutation>(
         graphql`
-            mutation LoginPage_authMutation($input: AuthUserInput!) {
-                AuthUserMutation(input: $input) {
+            mutation SignUpPage_CreateUserMutation($input: CreateUserInput!) {
+                CreateUserMutation(input: $input) {
                     me {
                         id
                         username
@@ -54,12 +55,13 @@ export const LoginPage = () => {
             variables: {
                 input: {
                     email: values.email,
+                    username: values.username,
                     password: values.password
                 }
             },
-            onCompleted: ({ AuthUserMutation }: LoginPage_authMutationResponse) => {
-                if (AuthUserMutation?.error) {
-                    toast(AuthUserMutation.error, {
+            onCompleted: ({ CreateUserMutation }: SignUpPage_CreateUserMutationResponse) => {
+                if (CreateUserMutation?.error) {
+                    toast(CreateUserMutation.error, {
                         type: "error",
                         position: "top-right",
                         autoClose: 5000,
@@ -72,9 +74,9 @@ export const LoginPage = () => {
                     return;
                 }
 
-                if (AuthUserMutation?.token) {
-                    localStorage.setItem('@relayTodo:token', AuthUserMutation.token);
-                    localStorage.setItem('@relayTodo:user', JSON.stringify(AuthUserMutation.me));
+                if (CreateUserMutation?.token) {
+                    localStorage.setItem('@relayTodo:token', CreateUserMutation.token);
+                    localStorage.setItem('@relayTodo:user', JSON.stringify(CreateUserMutation.me));
                     history.push('/home');
                 }
             },
@@ -85,10 +87,12 @@ export const LoginPage = () => {
     const formik = useFormik({
         initialValues: {
             email: '',
+            username: '',
             password: ''
         },
         validationSchema: Yup.object({
             email: Yup.string().required('E-mail required').email('Provide a valid e-mail'),
+            username: Yup.string().required('Username required'),
             password: Yup.string().required('Password required').min(6, 'Minimum of 6 characters')
         }),
         onSubmit
@@ -100,10 +104,9 @@ export const LoginPage = () => {
     };
 
     return (
-        <LoginPageContainer>
-
-            <LoginPageForm onSubmit={handleSubmitGambiarra} >
-                <LoginpageLabel>E-mail</LoginpageLabel>
+        <SignUpPageContainer>
+            <SignUpPageForm onSubmit={handleSubmitGambiarra} >
+                <SignUpPageLabel>Email</SignUpPageLabel>
                 <Input
                     isErrored={!!formik.errors.email}
                     type="text"
@@ -119,8 +122,23 @@ export const LoginPage = () => {
                 ) :
                     null
                 }
-
-                <LoginpageLabel>Password</LoginpageLabel>
+                <SignUpPageLabel>Username</SignUpPageLabel>
+                <Input
+                    isErrored={!!formik.errors.username}
+                    icon={AiOutlineUser}
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Username"
+                    value={formik.values.username}
+                    onChange={formik.handleChange}
+                />
+                {formik.touched.username && formik.errors.username ? (
+                    <ErrorMessage>{formik.errors.username}</ErrorMessage>
+                ) :
+                    null
+                }
+                <SignUpPageLabel>Password</SignUpPageLabel>
                 <Input
                     isErrored={!!formik.errors.password}
                     type="password"
@@ -136,16 +154,17 @@ export const LoginPage = () => {
                 ) :
                     null
                 }
-                <FormButton type="submit" >Sign in</FormButton>
+
+                <FormButton type="submit" onClick={() => { }}>Submit</FormButton>
                 <LinkContainer>
-                    <Link to="/signup">
-                        Don't have an account?
-                        <span>sign up</span>
-                        <AiOutlineUser />
+                    <Link to="/">
+                        Already have an account?
+                        <span>sign in</span>
+                        <FiLogIn />
                     </Link>
                 </LinkContainer>
-            </LoginPageForm>
+            </SignUpPageForm>
             <ToastContainer />
-        </LoginPageContainer>
+        </SignUpPageContainer>
     );
 };

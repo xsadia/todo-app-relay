@@ -1,4 +1,8 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+type TodoContentContainerProps = {
+    isCompleted: boolean;
+};
 
 export const Container = styled.div`
     display: flex;
@@ -12,8 +16,14 @@ export const Container = styled.div`
     }
 `;
 
-export const TodoContentContainer = styled.div`
-    
+export const TodoContainer = styled.div`
+    display: flex;
+`;
+
+export const TodoContentContainer = styled.div<TodoContentContainerProps>`
+    ${props => props.isCompleted && css`
+        text-decoration: line-through;
+    `}
 `;
 
 export const TodoContent = styled.h1`
@@ -24,6 +34,7 @@ export const TodoContent = styled.h1`
 export const TodoDate = styled.h2`
     font-size: 16px;
 `;
+
 
 export const DeleteTodoButton = styled.button`
     display: flex;
@@ -36,6 +47,21 @@ export const DeleteTodoButton = styled.button`
     transition: color 0.2s;
 
     &:hover {
-        color: red;
+        color: #ff0d0d;
+    }
+`;
+
+export const CompleteTodoButton = styled.button`
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    margin-right: 16px;
+    font-size: 24px;
+    color: var(--relay-orange);
+    transition: color 0.2s;
+
+    &:hover {
+        color: #0bbf4a;
     }
 `;

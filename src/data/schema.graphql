@@ -48,6 +48,7 @@ input CreateUserInput {
 }
 
 type CreateUserPayload {
+  me: User
   token: String
   error: String
   clientMutationId: String

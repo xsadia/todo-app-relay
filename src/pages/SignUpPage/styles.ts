@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const LoginPageContainer = styled.div`
+export const SignUpPageContainer = styled.div`
     height: 100vh;
     border: 3px;
     display: flex;
@@ -8,17 +8,17 @@ export const LoginPageContainer = styled.div`
     align-items: center;
 `;
 
-export const LoginPageForm = styled.form`
+export const SignUpPageForm = styled.form`
     display: flex;
     justify-content: center;
     flex-direction: column;
     width: 400px;
-    height: 300px;
+    height: 400px;
     padding: 16px;
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 `;
 
-export const LoginpageLabel = styled.label`
+export const SignUpPageLabel = styled.label`
     font-size: 24px;
     font-weight: 500;
 `;

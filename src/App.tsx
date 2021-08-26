@@ -4,13 +4,14 @@ import { Routes } from "./routes";
 import { GlobalStyle } from "./styles/global";
 import { BrowserRouter } from "react-router-dom";
 import { Suspense } from 'react';
+import { Spinner } from "./components/Spinner";
 
 function App() {
 
   return (
     <RelayEnvironmentProvider environment={RelayEnviroment}>
       <BrowserRouter>
-        <Suspense fallback={'Loading...'}>
+        <Suspense fallback={<Spinner />}>
           <Routes />
         </Suspense>
       </BrowserRouter>
