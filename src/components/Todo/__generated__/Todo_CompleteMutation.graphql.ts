@@ -13,6 +13,11 @@ export type Todo_CompleteMutationVariables = {
 };
 export type Todo_CompleteMutationResponse = {
     readonly CompleteTodoMutation: {
+        readonly todoEdge: {
+            readonly node: {
+                readonly isCompleted: boolean;
+            } | null;
+        } | null;
         readonly success: boolean | null;
         readonly error: string | null;
     } | null;
@@ -29,6 +34,12 @@ mutation Todo_CompleteMutation(
   $input: CompleteTodoInput!
 ) {
   CompleteTodoMutation(input: $input) {
+    todoEdge {
+      node {
+        isCompleted
+        id
+      }
+    }
     success
     error
   }
@@ -45,44 +56,76 @@ var v0 = [
 ],
 v1 = [
   {
-    "alias": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "input",
-        "variableName": "input"
-      }
-    ],
-    "concreteType": "CompleteTodoPayload",
-    "kind": "LinkedField",
-    "name": "CompleteTodoMutation",
-    "plural": false,
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "success",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "error",
-        "storageKey": null
-      }
-    ],
-    "storageKey": null
+    "kind": "Variable",
+    "name": "input",
+    "variableName": "input"
   }
-];
+],
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isCompleted",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "success",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "error",
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "Todo_CompleteMutation",
-    "selections": (v1/*: any*/),
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": "CompleteTodoPayload",
+        "kind": "LinkedField",
+        "name": "CompleteTodoMutation",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "TodoEdge",
+            "kind": "LinkedField",
+            "name": "todoEdge",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Todo",
+                "kind": "LinkedField",
+                "name": "node",
+                "plural": false,
+                "selections": [
+                  (v2/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
+          (v3/*: any*/),
+          (v4/*: any*/)
+        ],
+        "storageKey": null
+      }
+    ],
     "type": "Mutation",
     "abstractKey": null
   },
@@ -91,17 +134,61 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "Todo_CompleteMutation",
-    "selections": (v1/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": "CompleteTodoPayload",
+        "kind": "LinkedField",
+        "name": "CompleteTodoMutation",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "TodoEdge",
+            "kind": "LinkedField",
+            "name": "todoEdge",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Todo",
+                "kind": "LinkedField",
+                "name": "node",
+                "plural": false,
+                "selections": [
+                  (v2/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "id",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
+          (v3/*: any*/),
+          (v4/*: any*/)
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "cacheID": "16e5e4e852a0b2225431db4e3fdb0b51",
+    "cacheID": "7158f937e581772642291ca8d240ce10",
     "id": null,
     "metadata": {},
     "name": "Todo_CompleteMutation",
     "operationKind": "mutation",
-    "text": "mutation Todo_CompleteMutation(\n  $input: CompleteTodoInput!\n) {\n  CompleteTodoMutation(input: $input) {\n    success\n    error\n  }\n}\n"
+    "text": "mutation Todo_CompleteMutation(\n  $input: CompleteTodoInput!\n) {\n  CompleteTodoMutation(input: $input) {\n    todoEdge {\n      node {\n        isCompleted\n        id\n      }\n    }\n    success\n    error\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'ec15ab11b6ef8ef19b6ac00856ca64db';
+(node as any).hash = 'f6fca50eae85ad0a4feccc12a4fa5ce8';
 export default node;
