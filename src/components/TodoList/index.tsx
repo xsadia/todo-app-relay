@@ -1,59 +1,75 @@
-import graphql from 'babel-plugin-relay/macro';
-import { useCallback, useEffect } from 'react';
-import { loadQuery, usePreloadedQuery, useQueryLoader } from 'react-relay';
-import RelayEnviroment from '../../relay/RelayEnviroment';
-import { Todo } from '../Todo';
-import { Container } from './styles';
-import { TodoListQuery as TodolistQueryType } from './__generated__/TodoListQuery.graphql';
-import TodoListQuery from './__generated__/TodoListQuery.graphql';
-import { useHistory } from 'react-router-dom';
+import { graphql } from "babel-plugin-relay/macro";
+import { useEffect, useState } from "react";
+import { usePaginationFragment } from "react-relay";
+import { Todo } from "../Todo";
+import { Container } from "./styles";
+import { TodoList_query$key } from "./__generated__/TodoList_query.graphql";
+import { useHistory } from "react-router-dom";
+import { CreateTodoModal } from "../CreateTodoModal";
 
-export const TodoQuery = graphql`
-    query TodoListQuery {
-        user {
-            todos {
-                edges {
-                    node {
-                        id
-                        ... Todo_todo
-                    }
-                }
+type TodoListProps = {
+  query: TodoList_query$key;
+  isModalOpen: boolean;
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export const TodoList = ({
+  query,
+  isModalOpen,
+  setIsModalOpen,
+}: TodoListProps) => {
+  const { data, loadNext, isLoadingNext } = usePaginationFragment(
+    graphql`
+      fragment TodoList_query on Query
+      @argumentDefinitions(
+        first: { type: Int, defaultValue: 4 }
+        after: { type: String }
+      )
+      @refetchable(queryName: "TodoListPaginationQuery") {
+        todos(first: $first, after: $after) @connection(key: "TodoList_todos") {
+          __id
+          edges {
+            cursor
+            node {
+              id
+              ...Todo_todo
             }
+          }
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
         }
+      }
+    `,
+    query
+  );
+  const history = useHistory();
+  //   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("@relayTodo:token");
+    if (!token) {
+      history.push("/");
     }
-`;
+  }, [history]);
 
-const preloadedQuery = loadQuery<TodolistQueryType>(RelayEnviroment, TodoListQuery, {});
-
-export const TodoList = () => {
-
-    const [, loadTodoQuery] = useQueryLoader<TodolistQueryType>(
-        TodoListQuery,
-        preloadedQuery
-    );
-
-    const refresh = useCallback(() => {
-        loadTodoQuery({}, { fetchPolicy: 'network-only' });
-    }, [loadTodoQuery]);
-
-    const history = useHistory();
-
-    useEffect(() => {
-        const token = localStorage.getItem('@relayTodo:token');
-        if (!token) {
-            history.push('/');
-        }
-
-        refresh();
-    }, [history, refresh]);
-
-    const data = usePreloadedQuery<TodolistQueryType>(TodoListQuery, preloadedQuery, { UNSTABLE_renderPolicy: 'full' });
-
-    return (
-        <Container>
-            {data?.user?.todos.edges.map(({ node }) => (
-                <Todo key={node.id} query={node} refresh={refresh} />
-            ))}
-        </Container>
-    );
+  return (
+    <Container>
+      <CreateTodoModal
+        connectionID={data.todos.__id}
+        handleCloseModal={handleCloseModal}
+        isModalOpen={isModalOpen}
+      />
+      {data?.todos.edges.map(({ node }) => (
+        <Todo connectionID={data.todos.__id} key={node.id} query={node} />
+      ))}
+    </Container>
+  );
 };
